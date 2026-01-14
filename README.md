@@ -1,6 +1,6 @@
 # ToDoMe
 
-Minimal task manager UI built with React + Vite. Includes sidebar navigation, project dots, task badges (High/Medium/Upcoming), and a clean light layout inspired by the TaskDash mock.
+Minimal task manager UI built with React + Vite. Includes sidebar navigation, project dots, task badges (High/Medium/Upcoming), and a clean light layout inspired by the provided mock.
 
 ## Run locally
 - Install deps: `npm install`
