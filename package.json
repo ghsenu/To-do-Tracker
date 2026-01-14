@@ -1,5 +1,6 @@
 {
-  "name": "todo-tracker",
+  "name": "todome",
+  "description": "ToDoMe – personal task manager UI built with React + Vite",
   "private": true,
   "version": "0.0.0",
   "type": "module",
