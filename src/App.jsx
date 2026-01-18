@@ -197,6 +197,63 @@ export default function App() {
     );
   };
 
+  const renderUpcomingView = () => {
+    const upcomingTasks = tasks.filter(t => !t.completed);
+
+    return (
+      <>
+        <header className="content-header">
+          <div>
+            <h1>Upcoming</h1>
+            <p>{upcomingTasks.length} tasks scheduled</p>
+          </div>
+          <button className="primary-btn">+ Add Task</button>
+        </header>
+
+        <div className="task-list">
+          {upcomingTasks.map((task) => (
+            <div key={task.id} className={`task-card ${task.completed ? 'done' : ''}`}>
+              <label className="checkbox">
+                <input
+                  type="checkbox"
+                  defaultChecked={task.completed}
+                  onChange={() => {
+                    setTasks(
+                      tasks.map((t) => (t.id === task.id ? { ...t, completed: !t.completed } : t))
+                    );
+                  }}
+                />
+                <span className="checkmark" />
+              </label>
+
+              <div className="task-body">
+                <div className="task-title-row">
+                  <span className={`task-title ${task.completed ? 'completed' : ''}`}>
+                    {task.title}
+                  </span>
+                  {task.status && (
+                    <span className={`badge ${task.status}`}>
+                      {task.status === 'high' && 'HIGH'}
+                      {task.status === 'medium' && 'MEDIUM'}
+                      {task.status === 'low' && 'LOW'}
+                      {task.status === 'upcoming' && 'UPCOMING'}
+                    </span>
+                  )}
+                </div>
+                {task.note && <div className="task-note">{task.note}</div>}
+              </div>
+            </div>
+          ))}
+
+          <div className="task-card add-row">
+            <span className="plus">+</span>
+            <span className="placeholder">Add a new task...</span>
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -221,7 +278,10 @@ export default function App() {
           >
             <span className="nav-dot blue" /> Today
           </button>
-          <button className="nav-item">
+          <button
+            className={`nav-item ${currentView === 'upcoming' ? 'active' : ''}`}
+            onClick={() => setCurrentView('upcoming')}
+          >
             <span className="nav-dot" /> Upcoming
           </button>
           <button className="nav-item">
@@ -251,6 +311,7 @@ export default function App() {
       <main className="content">
         {currentView === 'today' && renderTodayView()}
         {currentView === 'inbox' && renderInboxView()}
+        {currentView === 'upcoming' && renderUpcomingView()}
       </main>
     </div>
   );
