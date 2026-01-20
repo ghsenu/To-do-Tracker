@@ -80,11 +80,9 @@ export default function App() {
         project: null,
         completed: false,
       };
+      console.log('Adding task:', newTask);
       setTasks([...tasks, newTask]);
       setNewTaskInput('');
-      if (addRowRef.current) {
-        addRowRef.current.focus();
-      }
     }
   };
 
@@ -102,9 +100,7 @@ export default function App() {
           <h1>Today</h1>
           <p>{todayTasks.length} tasks remaining</p>
         </div>
-        <button className="primary-btn" onClick={() => {
-          if (addRowRef.current) addRowRef.current.focus();
-        }}>+ Add Task</button>
+        <button className="primary-btn" onClick={addTask}>+ Add Task</button>
       </header>
 
       <div className="task-list">
@@ -170,9 +166,7 @@ export default function App() {
             <h1>Inbox</h1>
             <p>All pending items</p>
           </div>
-          <button className="primary-btn" onClick={() => {
-            if (addRowRef.current) addRowRef.current.focus();
-          }}>+ Add Task</button>
+          <button className="primary-btn" onClick={addTask}>+ Add Task</button>
         </header>
 
         <div className="search-wrapper">
@@ -246,9 +240,7 @@ export default function App() {
             <h1>Upcoming</h1>
             <p>{upcomingTasks.length} tasks scheduled</p>
           </div>
-          <button className="primary-btn" onClick={() => {
-            if (addRowRef.current) addRowRef.current.focus();
-          }}>+ Add Task</button>
+          <button className="primary-btn" onClick={addTask}>+ Add Task</button>
         </header>
 
         <div className="task-list">
@@ -348,7 +340,7 @@ export default function App() {
         </div>
 
         <div className="profile">
-          <div className="avatar">A</div>
+          <div className="avatar">G</div>
           <div>
             <div className="profile-name">Gihansa</div>
             <div className="profile-plan">Free Plan</div>
