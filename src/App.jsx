@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './App.css';
 
 const tasksData = [
@@ -64,9 +64,29 @@ export default function App() {
   const [currentView, setCurrentView] = useState('today');
   const [searchQuery, setSearchQuery] = useState('');
   const [tasks, setTasks] = useState(tasksData);
+  const [newTaskInput, setNewTaskInput] = useState('');
+  const addRowRef = useRef(null);
 
   const inboxTasks = tasks.filter(t => !t.completed);
   const todayTasks = tasks.filter(t => !t.completed).slice(0, 5);
+
+  const addTask = () => {
+    if (newTaskInput.trim()) {
+      const newTask = {
+        id: Math.max(...tasks.map(t => t.id), 0) + 1,
+        title: newTaskInput,
+        note: null,
+        status: null,
+        project: null,
+        completed: false,
+      };
+      setTasks([...tasks, newTask]);
+      setNewTaskInput('');
+      if (addRowRef.current) {
+        addRowRef.current.focus();
+      }
+    }
+  };
 
   const getProjectColor = (project) => {
     if (project === 'Design Work') return '#2563eb';
@@ -80,9 +100,11 @@ export default function App() {
       <header className="content-header">
         <div>
           <h1>Today</h1>
-          <p>5 tasks remaining</p>
+          <p>{todayTasks.length} tasks remaining</p>
         </div>
-        <button className="primary-btn">+ Add Task</button>
+        <button className="primary-btn" onClick={() => {
+          if (addRowRef.current) addRowRef.current.focus();
+        }}>+ Add Task</button>
       </header>
 
       <div className="task-list">
@@ -122,7 +144,15 @@ export default function App() {
 
         <div className="task-card add-row">
           <span className="plus">+</span>
-          <span className="placeholder">Add a new task...</span>
+          <input
+            ref={addRowRef}
+            type="text"
+            placeholder="Add a new task..."
+            value={newTaskInput}
+            onChange={(e) => setNewTaskInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && addTask()}
+            className="add-input"
+          />
         </div>
       </div>
     </>
@@ -140,7 +170,9 @@ export default function App() {
             <h1>Inbox</h1>
             <p>All pending items</p>
           </div>
-          <button className="primary-btn">+ Add Task</button>
+          <button className="primary-btn" onClick={() => {
+            if (addRowRef.current) addRowRef.current.focus();
+          }}>+ Add Task</button>
         </header>
 
         <div className="search-wrapper">
@@ -190,7 +222,14 @@ export default function App() {
 
           <div className="task-card add-row">
             <span className="plus">+</span>
-            <span className="placeholder">Type to add a new task...</span>
+            <input
+              type="text"
+              placeholder="Type to add a new task..."
+              value={newTaskInput}
+              onChange={(e) => setNewTaskInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && addTask()}
+              className="add-input"
+            />
           </div>
         </div>
       </>
@@ -207,7 +246,9 @@ export default function App() {
             <h1>Upcoming</h1>
             <p>{upcomingTasks.length} tasks scheduled</p>
           </div>
-          <button className="primary-btn">+ Add Task</button>
+          <button className="primary-btn" onClick={() => {
+            if (addRowRef.current) addRowRef.current.focus();
+          }}>+ Add Task</button>
         </header>
 
         <div className="task-list">
@@ -247,7 +288,14 @@ export default function App() {
 
           <div className="task-card add-row">
             <span className="plus">+</span>
-            <span className="placeholder">Add a new task...</span>
+            <input
+              type="text"
+              placeholder="Add a new task..."
+              value={newTaskInput}
+              onChange={(e) => setNewTaskInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && addTask()}
+              className="add-input"
+            />
           </div>
         </div>
       </>
