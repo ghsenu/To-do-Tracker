@@ -294,6 +294,60 @@ export default function App() {
     );
   };
 
+  const renderCompletedView = () => {
+    const completedTasks = tasks.filter(t => t.completed);
+
+    return (
+      <>
+        <header className="content-header">
+          <div>
+            <h1>Completed</h1>
+            <p>{completedTasks.length} tasks finished</p>
+          </div>
+        </header>
+
+        <div className="task-list">
+          {completedTasks.length === 0 ? (
+            <div className="text-center py-12">
+              <p style={{ color: '#94a3b8', fontSize: '16px' }}>No completed tasks yet. Keep working!</p>
+            </div>
+          ) : (
+            completedTasks.map((task) => (
+              <div key={task.id} className={`task-card done`}>
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => {
+                      setTasks(
+                        tasks.map((t) => (t.id === task.id ? { ...t, completed: !t.completed } : t))
+                      );
+                    }}
+                  />
+                  <span className="checkmark" />
+                </label>
+
+                <div className="task-body">
+                  <div className="task-title-row">
+                    <span className={`task-title completed`}>
+                      {task.title}
+                    </span>
+                    {task.project && (
+                      <span className="project-badge" style={{ backgroundColor: getProjectColor(task.project) }}>
+                        {task.project}
+                      </span>
+                    )}
+                  </div>
+                  {task.note && <div className="task-note">{task.note}</div>}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -324,7 +378,10 @@ export default function App() {
           >
             <span className="nav-dot" /> Upcoming
           </button>
-          <button className="nav-item">
+          <button
+            className={`nav-item ${currentView === 'completed' ? 'active' : ''}`}
+            onClick={() => setCurrentView('completed')}
+          >
             <span className="nav-dot" /> Completed
           </button>
         </nav>
@@ -351,6 +408,8 @@ export default function App() {
       <main className="content">
         {currentView === 'today' && renderTodayView()}
         {currentView === 'inbox' && renderInboxView()}
+        {currentView === 'upcoming' && renderUpcomingView()}
+        {currentView === 'completed' && renderCompletedView()}
         {currentView === 'upcoming' && renderUpcomingView()}
       </main>
     </div>
