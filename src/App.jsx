@@ -65,7 +65,10 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [tasks, setTasks] = useState(tasksData);
   const [newTaskInput, setNewTaskInput] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [modalTaskInput, setModalTaskInput] = useState('');
   const addRowRef = useRef(null);
+  const modalInputRef = useRef(null);
 
   const inboxTasks = tasks.filter(t => !t.completed);
   const todayTasks = tasks.filter(t => !t.completed).slice(0, 5);
@@ -86,6 +89,28 @@ export default function App() {
     }
   };
 
+  const addTaskFromModal = () => {
+    if (modalTaskInput.trim()) {
+      const newTask = {
+        id: Math.max(...tasks.map(t => t.id), 0) + 1,
+        title: modalTaskInput,
+        note: null,
+        status: null,
+        project: null,
+        completed: false,
+      };
+      setTasks([...tasks, newTask]);
+      setModalTaskInput('');
+      setShowAddModal(false);
+    }
+  };
+
+  const openAddTaskModal = () => {
+    setShowAddModal(true);
+    setModalTaskInput('');
+    setTimeout(() => modalInputRef.current?.focus(), 100);
+  };
+
   const getProjectColor = (project) => {
     if (project === 'Design Work') return '#2563eb';
     if (project === 'Health & Fitness') return '#10b981';
@@ -100,7 +125,7 @@ export default function App() {
           <h1>Today</h1>
           <p>{todayTasks.length} tasks remaining</p>
         </div>
-        <button className="primary-btn" onClick={addTask}>+ Add Task</button>
+        <button className="primary-btn" onClick={openAddTaskModal}>+ Add Task</button>
       </header>
 
       <div className="task-list">
@@ -166,7 +191,7 @@ export default function App() {
             <h1>Inbox</h1>
             <p>All pending items</p>
           </div>
-          <button className="primary-btn" onClick={addTask}>+ Add Task</button>
+          <button className="primary-btn" onClick={openAddTaskModal}>+ Add Task</button>
         </header>
 
         <div className="search-wrapper">
@@ -240,7 +265,7 @@ export default function App() {
             <h1>Upcoming</h1>
             <p>{upcomingTasks.length} tasks scheduled</p>
           </div>
-          <button className="primary-btn" onClick={addTask}>+ Add Task</button>
+          <button className="primary-btn" onClick={openAddTaskModal}>+ Add Task</button>
         </header>
 
         <div className="task-list">
@@ -412,6 +437,39 @@ export default function App() {
         {currentView === 'completed' && renderCompletedView()}
         {currentView === 'upcoming' && renderUpcomingView()}
       </main>
+
+      {/* Add Task Modal */}
+      {showAddModal && (
+        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Add New Task</h2>
+              <button className="modal-close" onClick={() => setShowAddModal(false)}>
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <input
+                ref={modalInputRef}
+                type="text"
+                placeholder="What do you need to do?"
+                value={modalTaskInput}
+                onChange={(e) => setModalTaskInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && addTaskFromModal()}
+                className="modal-input"
+              />
+            </div>
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={() => setShowAddModal(false)}>
+                Cancel
+              </button>
+              <button className="primary-btn" onClick={addTaskFromModal}>
+                Add Task
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
